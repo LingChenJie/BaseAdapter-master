@@ -1,0 +1,16 @@
+base-adapter-recyclerview实现流程
+
+思路：
+1.对于RecyclerView的实现，最核心需要处理的是继承RecylcerView.Adapter,实现最关键的onCreateViewHolder和onBindViewHolder两个方法
+2.对于多类型需要关心getItemCount和getItemViewType两个方法
+
+实现：
+1.MultiItemTypeAdapter是整个框架的核心，用于不同类型的处理，这时就衍生出了ItemViewDelegateManager用于处理多类型的管理
+
+2.MultiItemTypeAdapter中提供了addItemViewDelegate方法，子Adapter继承MultiItemTypeAdapter只需关心此方法的实现即可
+
+3.MultiItemTypeAdapter中的onCreateViewHolder方法根据ItemViewDelegateManager存放的类型实现数据的首次初始化，
+    onBindViewHolder用于解析数据，通过convert方法让ItemViewDelegateManager去实现，
+    ItemViewDelegateManager通过调用ItemViewDelegate的convert方法，让其添加类型代理时强制让使用者自己处理
+
+4.EmptyWrapper、HeaderAndFooterWrapper、LoadMoreWrapper是包含不同类型的Adapter，内部默认已经处理了实现，使用者使用只需处理这种情况下的布局即可
